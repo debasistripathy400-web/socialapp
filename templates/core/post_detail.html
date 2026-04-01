@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post by {{ post.user.username }} - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card fade-in" style="max-width: 600px; margin: 40px auto;">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+        <div style="display: flex; align-items: center;">
+            <img src="{{ post.user.profile_picture.url }}" class="profile-pic" alt="{{ post.user.username }}" style="width: 32px; height: 32px; margin-right: 12px;">
+            <a href="{% url 'profile' post.user.username %}" class="username" style="font-weight: 700;">{{ post.user.username }}</a>
+        </div>
+        {% if post.user == request.user %}
+        <div style="position: relative;" class="custom-dropdown">
+            <i class="fa-solid fa-ellipsis" style="cursor: pointer; padding: 4px; color: #888;" onclick="event.stopPropagation(); togglePostMenu('{{ post.id }}')"></i>
+            <div id="post-menu-{{ post.id }}" style="display: none; position: absolute; right: 0; top: 30px; background: white; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 500; min-width: 140px; overflow: hidden;">
+                <a href="{% url 'edit_post' post.id %}" style="display: flex; align-items: center; padding: 12px 16px; text-decoration: none; color: #333; font-size: 14px; border-bottom: 1px solid #f5f5f5; transition: 0.2s; background: white;">
+                    <i class="fa-solid fa-pen-to-square" style="margin-right: 12px; font-size: 16px; width: 16px; text-align: center;"></i>
+                    <span>Edit Post</span>
+                </a>
+                <a href="{% url 'delete_post' post.id %}" style="display: flex; align-items: center; padding: 12px 16px; text-decoration: none; color: #ff3b30; font-size: 14px; transition: 0.2s; background: white;" onclick="return confirm('Delete this post forever?')">
+                    <i class="fa-solid fa-trash" style="margin-right: 12px; font-size: 16px; width: 16px; text-align: center;"></i>
+                    <span>Delete</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="post-image" alt="Post content" style="width: 100%; display: block;">
+    {% endif %}
+
+    <div class="post-actions" style="padding: 12px 16px;">
+        <button class="btn-action like-btn" data-post-id="{{ post.id }}">
+            <i class="fa-{% if post.is_liked %}solid{% else %}regular{% endif %} fa-heart" id="like-icon-{{ post.id }}" style="{% if post.is_liked %}color: #e74c3c;{% endif %}"></i>
+        </button>
+        <span id="like-count-{{ post.id }}" style="font-weight: 600;">{{ post.likes.count }}</span> likes
+        <span style="color: #888; font-size: 12px; margin-left: 10px;">{{ post.created_at|date:"F d, Y" }}</span>
+    </div>
+
+    <div class="caption" style="padding: 0 16px 16px 16px; border-bottom: 1px solid #eee;">
+        <a href="{% url 'profile' post.user.username %}" class="username" style="font-weight: 700;">{{ post.user.username }}</a>
+        <span style="color: #333; margin-left: 5px;">{{ post.caption }}</span>
+    </div>
+
+    <div class="comments-section" style="padding: 16px;">
+        <h5 style="margin-bottom: 12px; font-weight: 600; font-size: 14px;">Comments</h5>
+        <div id="comments-list-{{ post.id }}">
+            {% for comment in post.comments.all %}
+            <div class="comment" style="margin-bottom: 8px; font-size: 14px;">
+                <strong style="color: var(--primary-color);">{{ comment.user.username }}</strong> {{ comment.text }}
+                <div style="font-size: 10px; color: #999; margin-top: 2px;">{{ comment.created_at|timesince }} ago</div>
+            </div>
+            {% empty %}
+            <p style="color: #999; font-size: 13px;">No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+        
+        <form class="comment-form" data-post-id="{{ post.id }}" style="display: flex; margin-top: 16px;">
+            {% csrf_token %}
+            <input type="text" name="text" placeholder="Add a comment..." class="form-control" style="padding: 10px; font-size: 14px; border-radius: 20px;">
+            <button type="submit" class="btn-primary" style="padding: 8px 16px; margin-left: 8px; border-radius: 20px;">Post</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

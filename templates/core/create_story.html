@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create New Story - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 40px auto; padding: 30px; border: 2px solid var(--secondary-color);">
+    <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 20px; text-align: center;">New Story</h1>
+    <p style="text-align: center; color: var(--gray-color); font-size: 14px; margin-bottom: 30px;">Stories appear for 24 hours on the home feed.</p>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--primary-color);">Select Image/Video</label>
+            <input type="file" name="media" class="form-control" accept="image/*,video/*" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; padding: 14px 20px;">Upload Story</button>
+    </form>
+</div>
+{% endblock %}

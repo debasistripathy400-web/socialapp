@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create New Post - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 40px auto; padding: 30px;">
+    <h1 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 20px; text-align: center;">New Post</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: #e74c3c; font-size: 12px; margin-top: 4px;">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary" style="width: 100%;">Post Content</button>
+    </form>
+</div>
+{% endblock %}

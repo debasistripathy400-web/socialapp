@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }} (@{{ profile_user.username }}){% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 60px;">
+    <!-- Profile Header -->
+    <div style="display: flex; align-items: start; margin-bottom: 40px; padding: 20px;">
+        <div style="margin-right: 40px;">
+            <img src="{{ profile_user.profile_picture.url }}" alt="{{ profile_user.username }}" 
+                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--white); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+        </div>
+        <div style="flex-grow: 1;">
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 24px; font-weight: 600; color: var(--primary-color);">{{ profile_user.username }}</h2>
+                {% if request.user == profile_user %}
+                    <a href="{% url 'edit_profile' %}" class="btn-primary" 
+                       style="margin-left: 20px; background: transparent; border: 1px solid #ddd; color: var(--primary-color); font-size: 14px; padding: 6px 16px;">
+                       Edit Profile
+                    </a>
+                {% else %}
+                    <button class="btn-primary follow-btn" data-username="{{ profile_user.username }}"
+                            style="margin-left: 20px; font-size: 14px; padding: 6px 16px; 
+                            {% if is_following %}background: transparent; border: 1px solid #ddd; color: var(--primary-color);{% endif %}">
+                        {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                {% endif %}
+            </div>
+            
+            <div style="display: flex; margin-bottom: 20px;">
+                <div style="margin-right: 30px;"><strong>{{ post_count }}</strong> posts</div>
+                <div style="margin-right: 30px;"><strong>{{ follower_count }}</strong> followers</div>
+                <div><strong>{{ following_count }}</strong> following</div>
+            </div>
+            
+            <div style="font-size: 15px; line-height: 1.6;">
+                <p style="font-weight: 500;">{{ profile_user.username }}</p>
+                <p style="color: #666;">{{ profile_user.bio }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Grid -->
+    <div style="border-top: 1px solid #eee; padding-top: 20px;">
+        {% if can_view_content %}
+            <h4 style="text-align: center; margin-bottom: 20px; color: var(--gray-color); text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">
+                <i class="fa fa-grid-3"></i> Posts
+            </h4>
+            
+            <div class="profile-grid">
+                {% for post in posts %}
+                {% if post.image %}
+                <div class="grid-item">
+                    <a href="{% url 'post_detail' post.id %}">
+                        <img src="{{ post.image.url }}" alt="Post image">
+                    </a>
+                </div>
+                {% endif %}
+                {% empty %}
+                    <div style="grid-column: span 3; text-align: center; padding: 40px; color: #999;">
+                        <i class="fa-regular fa-image" style="font-size: 40px; margin-bottom: 10px; display: block;"></i>
+                        No posts shared yet
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Private Account Message -->
+            <div style="text-align: center; padding: 60px 40px; background: white; border: 1px solid #eee; border-radius: 12px; margin-top: 20px;">
+                <div style="width: 80px; height: 80px; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i class="fa-solid fa-lock" style="font-size: 32px; color: #333;"></i>
+                </div>
+                <h3 style="font-weight: 700; color: #333; margin-bottom: 8px;">This Account is Private</h3>
+                <p style="color: #666; font-size: 14px;">Follow this account to see their photos and videos.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

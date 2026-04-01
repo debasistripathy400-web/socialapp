@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SocialApp{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {% if not hide_nav and user.is_authenticated %}
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="nav-link">
+                <i class="fa-solid fa-house"></i>
+                <span class="nav-text">Home</span>
+            </a>
+            <a href="{% url 'create_post' %}" class="nav-link">
+                <i class="fa-solid fa-plus-square"></i>
+                <span class="nav-text">Post</span>
+            </a>
+            <a href="{% url 'search' %}" class="nav-link">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span class="nav-text">Search</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-link">
+                <i class="fa-solid fa-heart"></i>
+                <span class="nav-text">Activity</span>
+            </a>
+            <a href="{% url 'profile' user.username %}" class="nav-link">
+                <i class="fa-solid fa-user"></i>
+                <span class="nav-text">Profile</span>
+            </a>
+            <a href="{% url 'logout' %}" class="nav-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="{% if not hide_nav %}container fade-in{% endif %}">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

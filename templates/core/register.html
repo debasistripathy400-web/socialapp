@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 450px; margin: 80px auto; padding: 40px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: var(--primary-color); font-weight: 700; font-size: 28px;">SocialApp</h1>
+        <p style="color: var(--gray-color); margin-top: 10px;">Create an account to join the community.</p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: #e74c3c; font-size: 12px; margin-top: 4px;">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary" style="width: 100%;">Sign Up</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+        <p>Already have an account? <a href="{% url 'login' %}" style="color: var(--secondary-color); font-weight: 600;">Log in</a></p>
+    </div>
+</div>
+{% endblock %}

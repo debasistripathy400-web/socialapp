@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Users - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 20px; margin-bottom: 30px;">
+    <form method="GET" action="{% url 'search' %}" style="display: flex;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search users by username..." 
+               class="form-control" style="border-radius: 8px 0 0 8px;">
+        <button type="submit" class="btn-primary" style="border-radius: 0 8px 8px 0; padding: 12px 24px;">
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+
+{% if query %}
+    <h3 style="font-size: 18px; margin-bottom: 20px; color: var(--primary-color);">Search Results for "{{ query }}"</h3>
+    <div class="card">
+        {% for user in users %}
+        <div style="display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #eee;">
+            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="profile-pic">
+            <div style="flex-grow: 1;">
+                <a href="{% url 'profile' user.username %}" class="username" style="font-size: 16px;">{{ user.username }}</a>
+                <p style="font-size: 12px; color: #999;">{{ user.email }}</p>
+            </div>
+            <a href="{% url 'profile' user.username %}" class="btn-primary" style="padding: 6px 16px; font-size: 13px;">View Profile</a>
+        </div>
+        {% empty %}
+            <p style="padding: 20px; text-align: center; color: #999;">No users found matching your search.</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Recently Visited Section -->
+<h3 style="font-size: 18px; margin-bottom: 20px; color: var(--primary-color); margin-top: 40px;">Recently Visited</h3>
+<div class="card">
+    <div style="display: flex; overflow-x: auto; padding: 20px; scrollbar-width: none;">
+        {% for profile in visited_profiles %}
+        <div style="margin-right: 25px; text-align: center; flex-shrink: 0;">
+            <a href="{% url 'profile' profile.username %}" style="text-decoration: none;">
+                <img src="{{ profile.profile_picture.url }}" alt="{{ profile.username }}" 
+                     style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #007bff; padding: 2px; background: white;">
+                <p style="font-size: 13px; color: var(--primary-color); font-weight: 500; margin-top: 8px;">{{ profile.username }}</p>
+            </a>
+        </div>
+        {% empty %}
+            <p style="color: #999; font-size: 14px; text-align: center; width: 100%;">You haven't visited any profiles recently.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

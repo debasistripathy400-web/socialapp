@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Activity - SocialApp{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 20px; border: 1px solid rgba(0,0,0,0.05);">
+    <h2 style="font-size: 22px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px; padding-left: 10px;">Activity</h2>
+    
+    <div class="notifications-list">
+        {% for notification in notifications %}
+        <div style="display: flex; align-items: center; padding: 16px; border-radius: 12px; margin-bottom: 8px; transition: var(--transition);
+                    {% if not notification.is_read %}background-color: #f0f7ff; border: 1px solid #d0e7ff;{% else %}background-color: transparent; border: 1px solid transparent;{% endif %}">
+            
+            <a href="{% url 'profile' notification.sender.username %}">
+                <img src="{{ notification.sender.profile_picture.url }}" alt="{{ notification.sender.username }}" 
+                     style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--white); box-shadow: var(--shadow);">
+            </a>
+            
+            <div style="flex-grow: 1; margin-left: 16px;">
+                <p style="font-size: 14px; color: #111;">
+                    <a href="{% url 'profile' notification.sender.username %}" style="text-decoration: none; font-weight: 700; color: var(--primary-color);">{{ notification.sender.username }}</a>
+                    <span style="color: #444; margin-left: 4px;">{{ notification.text }}</span>
+                </p>
+                <p style="font-size: 12px; color: #888; margin-top: 2px;">{{ notification.created_at|timesince }} ago</p>
+            </div>
+            
+            {% if notification.post and notification.post.image %}
+            <div style="margin-left: 15px;">
+                <img src="{{ notification.post.image.url }}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+            </div>
+            {% endif %}
+            
+            {% if notification.notification_type == 'FOLLOW' %}
+            <div style="margin-left: 15px;">
+                <button class="btn-primary follow-btn" data-username="{{ notification.sender.username }}" 
+                        style="padding: 7px 14px; font-size: 13px; border-radius: 8px;">Follow</button>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 60px 40px; color: #bbb;">
+            <div style="background: #f8f9fa; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-regular fa-bell" style="font-size: 32px;"></i>
+            </div>
+            <h3 style="font-size: 18px; color: #555;">No alerts yet</h3>
+            <p style="font-size: 14px; margin-top: 8px;">Interactions from your followers will appear here.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
